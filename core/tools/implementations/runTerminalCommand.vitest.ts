@@ -864,7 +864,7 @@ describe("runTerminalCommandTool.evaluateToolCallPolicy", () => {
     expect(result).toBe("disabled");
   });
 
-  it("should require permission for high-risk network commands", () => {
+  it("should honor automatic policy for high-risk network commands", () => {
     const basePolicy = "allowedWithoutPermission";
     const args = { command: "curl http://example.com" };
 
@@ -873,6 +873,6 @@ describe("runTerminalCommandTool.evaluateToolCallPolicy", () => {
       args,
     );
 
-    expect(result).toBe("allowedWithPermission");
+    expect(result).toBe("allowedWithoutPermission");
   });
 });

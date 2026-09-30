@@ -65,10 +65,20 @@ export const runTerminalCommandTool: Tool = {
     basePolicy: ToolPolicy,
     parsedArgs: Record<string, unknown>,
   ): ToolPolicy => {
-    return evaluateTerminalCommandSecurity(
+    const evaluatedPolicy = evaluateTerminalCommandSecurity(
       basePolicy,
       parsedArgs.command as string,
     );
+
+    // Honor explicit Automatic while preserving disabled security decisions.
+    if (
+      basePolicy === "allowedWithoutPermission" &&
+      evaluatedPolicy === "allowedWithPermission"
+    ) {
+      return "allowedWithoutPermission";
+    }
+
+    return evaluatedPolicy;
   },
   systemMessageDescription: {
     prefix: `To run a terminal command, use the ${BuiltInToolNames.RunTerminalCommand} tool
